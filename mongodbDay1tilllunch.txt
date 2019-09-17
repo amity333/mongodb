@@ -1,0 +1,632 @@
+
+C:\mongodb\mongodb3.0.15\bin>mongo
+2019-09-17T10:32:57.156+0530 I CONTROL  Hotfix KB2731284 or later update is not
+installed, will zero-out data files
+MongoDB shell version: 3.0.15
+connecting to: test
+Welcome to the MongoDB shell.
+For interactive help, type "help".
+For more comprehensive documentation, see
+        http://docs.mongodb.org/
+Questions? Try the support group
+        http://groups.google.com/group/mongodb-user
+> show dbs
+local  0.078GB
+> use jul11clouddb
+switched to db jul11clouddb
+> show dbs
+local  0.078GB
+> db.createCollection("students");
+{ "ok" : 1 }
+> show collections;
+students
+system.indexes
+>
+> db.students.find();
+> db.students.insert({_id:222,firstName:"Amit",lastName:"Yadav"})
+WriteResult({ "nInserted" : 1 })
+> db.students.find({});
+{ "_id" : 222, "firstName" : "Amit", "lastName" : "Yadav" }
+> db.students.insert({_id:333,firstName:"Sumit",lastName:"Kumar",marks:60})
+WriteResult({ "nInserted" : 1 })
+>
+> db.students.find({});
+{ "_id" : 222, "firstName" : "Amit", "lastName" : "Yadav" }
+{ "_id" : 333, "firstName" : "Sumit", "lastName" : "Kumar", "marks" : 60 }
+>
+> db.createCollection("employees");
+{ "ok" : 1 }
+> db.employees.insert({_id:112,firstName:"Ram",lastName:"Sharma",salary:2000.0,a
+ge:20,isEmployeed:true});
+WriteResult({ "nInserted" : 1 })
+> db.employees.insert({_id:113,firstName:"Amit",lastName:"Yadav",salary:3000.0,a
+ge:23,isEmployeed:true});
+WriteResult({ "nInserted" : 1 })
+> db.employees.insert({_id:114,firstName:"Sameer",lastName:"Khan",salary:7800.0,
+age:34,isEmployeed:false});
+WriteResult({ "nInserted" : 1 })
+> db.employees.insert({_id:114,firstName:"Abhi",lastName:"Sharma",salary:4100.0,
+age:55,isEmployeed:false});
+WriteResult({
+        "nInserted" : 0,
+        "writeError" : {
+                "code" : 11000,
+                "errmsg" : "E11000 duplicate key error index: jul11clouddb.emplo
+yees.$_id_ dup key: { : 114.0 }"
+        }
+})
+> db.employees.insert({_id:115,firstName:"Abhi",lastName:"Sharma",salary:4100.0,
+age:55,isEmployeed:false});
+WriteResult({ "nInserted" : 1 })
+>
+>
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age
+" : 20, "isEmployeed" : true }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "Yadav", "salary" : 3000, "age
+" : 23, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "ag
+e" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "ag
+e" : 55, "isEmployeed" : false }
+>
+>
+> db.employees.find({_id:113});
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "Yadav", "salary" : 3000, "age
+" : 23, "isEmployeed" : true }
+>
+>
+> db.employees.find({_id:113},{age:0,isEmployeed:0});
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "Yadav", "salary" : 3000 }
+> db.employees.find({_id:113},{age:1,isEmployeed:1});
+{ "_id" : 113, "age" : 23, "isEmployeed" : true }
+>
+>
+> db.employees.find().pretty();
+{
+        "_id" : 112,
+        "firstName" : "Ram",
+        "lastName" : "Sharma",
+        "salary" : 2000,
+        "age" : 20,
+        "isEmployeed" : true
+}
+{
+        "_id" : 113,
+        "firstName" : "Amit",
+        "lastName" : "Yadav",
+        "salary" : 3000,
+        "age" : 23,
+        "isEmployeed" : true
+}
+{
+        "_id" : 114,
+        "firstName" : "Sameer",
+        "lastName" : "Khan",
+        "salary" : 7800,
+        "age" : 34,
+        "isEmployeed" : false
+}
+{
+        "_id" : 115,
+        "firstName" : "Abhi",
+        "lastName" : "Sharma",
+        "salary" : 4100,
+        "age" : 55,
+        "isEmployeed" : false
+}
+>
+>
+> db.employees.update({firstname:"Amit"},{lastname:"sharma"})
+WriteResult({ "nMatched" : 0, "nUpserted" : 0, "nModified" : 0 })
+> db.employees.update({firstName:"Amit"},{$set:{lastName:"kumar"}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "kumar", "salary" : 3000, "age" : 23, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+> db.employees.update({firstName:"Amit"},{$set:{gender:male}});
+2019-09-17T11:41:45.238+0530 E QUERY    ReferenceError: male is not defined
+    at (shell):1:54
+> db.employees.update({firstName:"Amit"},{$set:{gender:"male"}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "kumar", "salary" : 3000, "age" : 23, "isEmployeed" : true, "gender" : "male" }
+>
+>
+>
+> db.employees.update({firstName:"Amit"},{$inc:{salary:5000}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "kumar", "salary" : 8000, "age" : 23, "isEmployeed" : true, "gender" : "male" }
+>
+>
+> db.employees.update({firstName:"Amit"},{$unset:{gender:"male"}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "kumar", "salary" : 8000, "age" : 23, "isEmployeed" : true }
+>
+>
+> db.employees.insert({_id:114,firstName:"Amit",lastName:"Yadav"});
+WriteResult({
+        "nInserted" : 0,
+        "writeError" : {
+                "code" : 11000,
+                "errmsg" : "E11000 duplicate key error index: jul11clouddb.employees.$_id_ dup key: { : 114.0 }"
+        }
+})
+> db.employees.insert({_id:800,firstName:"Amit",lastName:"Yadav"});
+WriteResult({ "nInserted" : 1 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "kumar", "salary" : 8000, "age" : 23, "isEmployeed" : true }
+{ "_id" : 800, "firstName" : "Amit", "lastName" : "Yadav" }
+> db.employees.find().count();
+5
+> db.employees.update({firstName:"Amit"},{$set:{lastName:"aaa"}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "aaa", "salary" : 8000, "age" : 23, "isEmployeed" : true }
+{ "_id" : 800, "firstName" : "Amit", "lastName" : "Yadav" }
+>
+>
+> db.employees.update({firstName:"Amit"},{$set:{lastName:"aaa"}},{multi:true});
+WriteResult({ "nMatched" : 2, "nUpserted" : 0, "nModified" : 1 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "aaa", "salary" : 8000, "age" : 23, "isEmployeed" : true }
+{ "_id" : 800, "firstName" : "Amit", "lastName" : "aaa" }
+>
+>
+>
+> db.employees.update({firstName:"Amit"},{$set:{foodILike:["idli","dosa"]}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "aaa", "salary" : 8000, "age" : 23, "isEmployeed" : true, "foodILike" : [ "idli", "dosa" ] }
+{ "_id" : 800, "firstName" : "Amit", "lastName" : "aaa" }
+>
+>
+>
+> db.employees.update({firstName:"Amit"},{$push:{foodILike:"pizza"}},{multi:true});
+WriteResult({ "nMatched" : 2, "nUpserted" : 0, "nModified" : 2 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "aaa", "salary" : 8000, "age" : 23, "isEmployeed" : true, "foodILike" : [ "idli", "dosa", "pizza" ] }
+{ "_id" : 800, "firstName" : "Amit", "lastName" : "aaa", "foodILike" : [ "pizza" ] }
+>
+>
+> db.employees.update({firstName:"Amit"},{$pop:{foodILike:"pizza"}},{multi:true});
+WriteResult({ "nMatched" : 2, "nUpserted" : 0, "nModified" : 2 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "aaa", "salary" : 8000, "age" : 23, "isEmployeed" : true, "foodILike" : [ "idli", "dosa" ] }
+{ "_id" : 800, "firstName" : "Amit", "lastName" : "aaa", "foodILike" : [ ] }
+>
+>
+> db.employees.update({firstName:"Amit"},{$pull:{foodILike:"idli"}},{multi:true});
+WriteResult({ "nMatched" : 2, "nUpserted" : 0, "nModified" : 1 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "aaa", "salary" : 8000, "age" : 23, "isEmployeed" : true, "foodILike" : [ "dosa" ] }
+{ "_id" : 800, "firstName" : "Amit", "lastName" : "aaa", "foodILike" : [ ] }
+>
+>
+>
+> db.employees.update({firstName:"Tanmay"},{firstname:"Tanmay",lastName:"Acharya",gender:"male"},{upsert:true});
+WriteResult({
+        "nMatched" : 0,
+        "nUpserted" : 1,
+        "nModified" : 0,
+        "_id" : ObjectId("5d8089cecad71e28db97da88")
+})
+>
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "aaa", "salary" : 8000, "age" : 23, "isEmployeed" : true, "foodILike" : [ "dosa" ] }
+{ "_id" : 800, "firstName" : "Amit", "lastName" : "aaa", "foodILike" : [ ] }
+{ "_id" : ObjectId("5d8089cecad71e28db97da88"), "firstname" : "Tanmay", "lastName" : "Acharya", "gender" : "male" }
+>
+>
+> db.employees.remove({firstname:"Amit"});
+WriteResult({ "nRemoved" : 0 })
+> db.employees.remove({firstname:"Amit"});
+WriteResult({ "nRemoved" : 0 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : 113, "firstName" : "Amit", "lastName" : "aaa", "salary" : 8000, "age" : 23, "isEmployeed" : true, "foodILike" : [ "dosa" ] }
+{ "_id" : 800, "firstName" : "Amit", "lastName" : "aaa", "foodILike" : [ ] }
+{ "_id" : ObjectId("5d8089cecad71e28db97da88"), "firstname" : "Tanmay", "lastName" : "Acharya", "gender" : "male" }
+> db.employees.remove({firstName:"Amit"});
+WriteResult({ "nRemoved" : 2 })
+> db.employees.find();
+{ "_id" : 112, "firstName" : "Ram", "lastName" : "Sharma", "salary" : 2000, "age" : 20, "isEmployeed" : true }
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : 115, "firstName" : "Abhi", "lastName" : "Sharma", "salary" : 4100, "age" : 55, "isEmployeed" : false }
+{ "_id" : ObjectId("5d8089cecad71e28db97da88"), "firstname" : "Tanmay", "lastName" : "Acharya", "gender" : "male" }
+>
+>
+>
+> db.employees.insert({_id:111,firstName:"Ankit",lastName:"Shinde",salary:78000.0,gender:"male"});
+WriteResult({ "nInserted" : 1 })
+>
+>
+> db.employees.remove({lastName:/s/}});
+2019-09-17T12:59:01.973+0530 E QUERY    SyntaxError: Unexpected token }
+> db.employees.remove({lastName:/s/});
+WriteResult({ "nRemoved" : 0 })
+> db.employees.remove({lastName:/S/});
+WriteResult({ "nRemoved" : 3 })
+> db.employees.find();
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : ObjectId("5d8089cecad71e28db97da88"), "firstname" : "Tanmay", "lastName" : "Acharya", "gender" : "male" }
+>
+> db.employees.insert({_id:111,firstName:"Ankit",lastName:"Shinde",salary:78000.0,gender:"male"});
+WriteResult({ "nInserted" : 1 })
+> db.employees.find();
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : ObjectId("5d8089cecad71e28db97da88"), "firstname" : "Tanmay", "lastName" : "Acharya", "gender" : "male" }
+{ "_id" : 111, "firstName" : "Ankit", "lastName" : "Shinde", "salary" : 78000, "gender" : "male" }
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                "state" : "TS"
+        },
+        "contacts" : "9987600034",
+        "annlGrossSal" : [
+                {
+                        "year" : 2001,
+                        "gross" : "960000"
+                },
+                {
+                        "year" : 2002,
+                        "gross" : "470000"
+                },
+                {
+                        "year" : 2003,
+                        "gross" : "560000"
+                }
+        ]
+}
+{
+        "_id" : 5,
+        "firstname" : "Sugumara",
+        "lastname" : "H",
+        "DOB" : ISODate("2014-11-11T00:00:00Z"),
+        "deptinfo" : {
+                "_id" : 30,
+                "deptname" : "java"
+        },
+        "mgrcode" : 7,
+        "gender" : "male",
+        "age" : 23,
+        "salary" : 23000,
+        "address" : {
+                "street" : "T Market",
+                "city" : "Chennai",
+                "state" : "TS"
+        },
+        "contacts" : "044-231222",
+        "annlGrossSal" : [
+                {
+                        "year" : 2001,
+                        "gross" : "960000"
+                },
+                {
+                        "year" : 2002,
+                        "gross" : "470000"
+                },
+                {
+                        "year" : 2003,
+                        "gross" : "560000"
+                }
+        ]
+}
+{
+        "_id" : 6,
+        "firstname" : "Uma",
+        "lastname" : "P",
+        "DOB" : ISODate("2019-09-17T07:35:51.065Z"),
+        "deptinfo" : {
+                "_id" : 30,
+                "deptname" : "java"
+        },
+        "mgrcode" : 8,
+        "gender" : "female",
+        "age" : 53,
+        "salary" : 300000,
+        "address" : {
+                "street" : "MgRoad",
+                "city" : "Mysoor",
+                "state" : "KA"
+        },
+        "contacts" : "9430087878",
+        "annlGrossSal" : [
+                {
+                        "year" : 2001,
+                        "gross" : "9000000"
+                },
+                {
+                        "year" : 2002,
+                        "gross" : "3000000"
+                },
+                {
+                        "year" : 2003,
+                        "gross" : "2000000"
+                }
+        ]
+}
+{
+        "_id" : 6,
+        "firstname" : "Uma",
+        "lastname" : "P",
+        "DOB" : ISODate("2019-09-17T07:35:51.065Z"),
+        "deptinfo" : {
+                "_id" : 30,
+                "deptname" : "java"
+        },
+        "mgrcode" : 8,
+        "gender" : "female",
+        "age" : 53,
+        "salary" : 300000,
+        "address" : {
+                "street" : "MgRoad",
+                "city" : "Mysoor",
+                "state" : "KA"
+        },
+        "contacts" : "011-888888",
+        "annlGrossSal" : [
+                {
+                        "year" : 2001,
+                        "gross" : "9000000"
+                },
+                {
+                        "year" : 2002,
+                        "gross" : "3000000"
+                },
+                {
+                        "year" : 2003,
+                        "gross" : "2000000"
+                }
+        ]
+}
+{
+        "_id" : 7,
+        "firstname" : "Kavita",
+        "lastname" : "Arora",
+        "DOB" : ISODate("2014-05-06T00:00:00Z"),
+        "deptinfo" : {
+                "_id" : 30,
+                "deptname" : "java"
+        },
+        "mgrcode" : 8,
+        "gender" : "female",
+        "age" : 53,
+        "salary" : 42000,
+        "address" : {
+                "street" : "Mulund Road",
+                "city" : "Mumbai",
+                "state" : "MS"
+        },
+        "contacts" : "9447666780",
+        "annlGrossSal" : [
+                {
+                        "year" : 2001,
+                        "gross" : "4300000"
+                },
+                {
+                        "year" : 2002,
+                        "gross" : "3300000"
+                },
+                {
+                        "year" : 2003,
+                        "gross" : "2300000"
+                }
+        ]
+}
+{
+        "_id" : 7,
+        "firstname" : "Kavita",
+        "lastname" : "Arora",
+        "DOB" : ISODate("2014-05-06T00:00:00Z"),
+        "deptinfo" : {
+                "_id" : 30,
+                "deptname" : "java"
+        },
+        "mgrcode" : 8,
+        "gender" : "female",
+        "age" : 53,
+        "salary" : 42000,
+        "address" : {
+                "street" : "Mulund Road",
+                "city" : "Mumbai",
+                "state" : "MS"
+        },
+        "contacts" : "022-111111",
+        "annlGrossSal" : [
+                {
+                        "year" : 2001,
+                        "gross" : "4300000"
+                },
+                {
+                        "year" : 2002,
+                        "gross" : "3300000"
+                },
+                {
+                        "year" : 2003,
+                        "gross" : "2300000"
+                }
+        ]
+}
+{
+        "_id" : 8,
+        "firstname" : "Mahima",
+        "lastname" : "Sharma",
+        "DOB" : ISODate("2002-04-09T00:00:00Z"),
+        "gender" : "female",
+        "age" : 53,
+        "salary" : 1200000,
+        "address" : {
+                "street" : "Pimpari Road",
+                "city" : "Pune",
+                "state" : "MS"
+        },
+        "contacts" : "9447666780",
+        "annlGrossSal" : [
+                {
+                        "year" : 2001,
+                        "gross" : "4000000"
+                },
+                {
+                        "year" : 2002,
+                        "gross" : "2000000"
+                },
+                {
+                        "year" : 2003,
+                        "gross" : "1000000"
+                }
+        ]
+}
+{
+        "_id" : 8,
+        "firstname" : "Mahima",
+        "lastname" : "Sharma",
+        "DOB" : ISODate("2002-04-09T00:00:00Z"),
+        "gender" : "female",
+        "age" : 53,
+        "salary" : 1200000,
+        "address" : {
+                "street" : "Pimpari Road",
+                "city" : "Pune",
+                "state" : "MS"
+        },
+        "contacts" : "020-3454333",
+        "annlGrossSal" : [
+                {
+                        "year" : 2001,
+                        "gross" : "4000000"
+                },
+                {
+                        "year" : 2002,
+                        "gross" : "2000000"
+                },
+                {
+                        "year" : 2003,
+                        "gross" : "1000000"
+                }
+        ]
+}
+> db.employees.aggregate([{$match:{firstname:"Kavita"}},{$unwind:"$contact"}]).pretty();
+>
+>
+> db.employees.aggregate([{$sort:{lastname:1}}]);
+{ "_id" : 114, "firstName" : "Sameer", "lastName" : "Khan", "salary" : 7800, "age" : 34, "isEmployeed" : false }
+{ "_id" : ObjectId("5d8089cecad71e28db97da88"), "firstname" : "Tanmay", "lastName" : "Acharya", "gender" : "male" }
+{ "_id" : 111, "firstName" : "Ankit", "lastName" : "Shinde", "salary" : 78000, "gender" : "male" }
+{ "_id" : 1, "firstname" : "Tanmaya", "lastname" : "Acharaya", "DOB" : ISODate("1990-07-25T00:00:00Z"), "deptinfo" : { "_id" : 30, "deptname" : "java" }, "mgrcode" : 7, "gender" : "Female", "age" : 39, "salary" : 39000, "address" : { "street" : "89,Common Street", "city" : "Ooty", "state" : "KS" }, "contacts" : [ "9860567543", "011-234333" ], "annlGrossSal" : [ { "year" : 2001, "gross" : "100000"
+}, { "year" : 2002, "gross" : "250000" }, { "year" : 2003, "gross" : "350000" } ] }
+{ "_id" : 7, "firstname" : "Kavita", "lastname" : "Arora", "DOB" : ISODate("2014-05-06T00:00:00Z"), "deptinfo" : { "_id" : 30, "deptname" : "java" }, "mgrcode" : 8, "gender" : "female", "age" : 53, "salary" : 42000, "address" : { "street" : "Mulund Road", "city" : "Mumbai", "state" : "MS" }, "contacts" : [ "9447666780", "022-111111" ], "annlGrossSal" : [ { "year" : 2001, "gross" : "4300000" }, { "
+year" : 2002, "gross" : "3300000" }, { "year" : 2003, "gross" : "2300000" } ] }
+{ "_id" : 2, "firstname" : "Shilpa", "lastname" : "Bhosale", "DOB" : ISODate("2002-03-11T00:00:00Z"), "deptinfo" : { "_id" : 40, "deptname" : "testing" }, "mgrcode" : 8, "gender" : "Female", "age" : 32, "salary" : 20000, "address" : { "street" : "66,Airoli", "city" : "Mumbai", "state" : "MS" }, "contacts" : [ "7656755555", "022-2453335" ], "annlGrossSal" : [ { "year" : 1999, "gross" : "500000" },
+{ "year" : 2000, "gross" : "400000" }, { "year" : 2001, "gross" : "800000" } ] }
+{ "_id" : 5, "firstname" : "Sugumara", "lastname" : "H", "DOB" : ISODate("2014-11-11T00:00:00Z"), "deptinfo" : { "_id" : 30, "deptname" : "java" }, "mgrcode" : 7, "gender" : "male", "age" : 23, "salary" : 23000, "address" : { "street" : "T Market", "city" : "Chennai", "state" : "TS" }, "contacts" : [ "9987600034", "044-231222" ], "annlGrossSal" : [ { "year" : 2001, "gross" : "960000" }, { "year" :
+ 2002, "gross" : "470000" }, { "year" : 2003, "gross" : "560000" } ] }
+{ "_id" : 3, "firstname" : "Kadiresan", "lastname" : "Kaushik", "DOB" : ISODate("1990-01-31T18:30:00Z"), "deptinfo" : { "_id" : 30, "deptname" : "java" }, "mgrcode" : 7, "gender" : "Male", "age" : 30, "salary" : 25000, "address" : { "street" : "Sipcot", "city" : "Chennai", "state" : "TS" }, "contacts" : [ "8888100077", "044-321109" ], "annlGrossSal" : [ { "year" : 2001, "gross" : "340000" }, { "ye
+ar" : 2002, "gross" : "670000" }, { "year" : 2003, "gross" : "880000" } ] }
+{ "_id" : 4, "firstname" : "Vandana", "lastname" : "Koleshwar", "DOB" : ISODate("2014-08-10T00:00:00Z"), "deptinfo" : { "_id" : 20, "deptname" : "sap" }, "mgrcode" : 8, "gender" : "female", "age" : 56, "salary" : 47000, "address" : { "street" : "Thane Road", "city" : "Mumbai", "state" : "MS" }, "contacts" : [ "8888100077", "044-321109" ], "annlGrossSal" : [ { "year" : 2001, "gross" : "5960000" },
+{ "year" : 2002, "gross" : "3470000" }, { "year" : 2003, "gross" : "7680000" } ] }
+{ "_id" : 6, "firstname" : "Uma", "lastname" : "P", "DOB" : ISODate("2019-09-17T07:35:51.065Z"), "deptinfo" : { "_id" : 30, "deptname" : "java" }, "mgrcode" : 8, "gender" : "female", "age" : 53, "salary" : 300000, "address" : { "street" : "MgRoad", "city" : "Mysoor", "state" : "KA" }, "contacts" : [ "9430087878", "011-888888" ], "annlGrossSal" : [ { "year" : 2001, "gross" : "9000000" }, { "year" :
+ 2002, "gross" : "3000000" }, { "year" : 2003, "gross" : "2000000" } ] }
+{ "_id" : 8, "firstname" : "Mahima", "lastname" : "Sharma", "DOB" : ISODate("2002-04-09T00:00:00Z"), "gender" : "female", "age" : 53, "salary" : 1200000, "address" : { "street" : "Pimpari Road", "city" : "Pune", "state" : "MS" }, "contacts" : [ "9447666780", "020-3454333" ], "annlGrossSal" : [ { "year" : 2001, "gross" : "4000000" }, { "year" : 2002, "gross" : "2000000" }, { "year" : 2003, "gross"
+: "1000000" } ] }
+>
+> db.employees.aggregate([{$project:{LASTNAME:{$toUpper:"$lastname"}}},{$sort:{LASTNAME:1}}]);
+{ "_id" : 114, "LASTNAME" : "" }
+{ "_id" : ObjectId("5d8089cecad71e28db97da88"), "LASTNAME" : "" }
+{ "_id" : 111, "LASTNAME" : "" }
+{ "_id" : 1, "LASTNAME" : "ACHARAYA" }
+{ "_id" : 7, "LASTNAME" : "ARORA" }
+{ "_id" : 2, "LASTNAME" : "BHOSALE" }
+{ "_id" : 5, "LASTNAME" : "H" }
+{ "_id" : 3, "LASTNAME" : "KAUSHIK" }
+{ "_id" : 4, "LASTNAME" : "KOLESHWAR" }
+{ "_id" : 6, "LASTNAME" : "P" }
+{ "_id" : 8, "LASTNAME" : "SHARMA" }
+>
+>
+>
+> db.employees.aggregate([{$project:{DOBYear:{year:"$DOB"}}}]);
+{ "_id" : 114 }
+{ "_id" : ObjectId("5d8089cecad71e28db97da88") }
+{ "_id" : 111 }
+{ "_id" : 1, "DOBYear" : { "year" : ISODate("1990-07-25T00:00:00Z") } }
+{ "_id" : 2, "DOBYear" : { "year" : ISODate("2002-03-11T00:00:00Z") } }
+{ "_id" : 3, "DOBYear" : { "year" : ISODate("1990-01-31T18:30:00Z") } }
+{ "_id" : 4, "DOBYear" : { "year" : ISODate("2014-08-10T00:00:00Z") } }
+{ "_id" : 5, "DOBYear" : { "year" : ISODate("2014-11-11T00:00:00Z") } }
+{ "_id" : 6, "DOBYear" : { "year" : ISODate("2019-09-17T07:35:51.065Z") } }
+{ "_id" : 7, "DOBYear" : { "year" : ISODate("2014-05-06T00:00:00Z") } }
+{ "_id" : 8, "DOBYear" : { "year" : ISODate("2002-04-09T00:00:00Z") } }
+>
+>
+> db.employees.aggregate([{$project:{DOBYear:{year:"$DOB"}}}]);
